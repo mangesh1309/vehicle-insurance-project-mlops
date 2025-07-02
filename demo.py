@@ -10,12 +10,19 @@
 
 # ------------------------------- exception demo ------------------------------- #
 
-from src.logger import logger
-from src.exception import CustomException
-import sys
+# from src.logger import logger
+# from src.exception import CustomException
+# import sys
 
-try:
-    15/0
-except Exception as e:
-    logger.info(e)
-    raise CustomException(str(e), sys) from e
+# try:
+#     15/0
+# except Exception as e:
+#     logger.info(e)
+#     raise CustomException(str(e), sys) from e
+
+# ------------------------------- Data Ingestion demo ------------------------------- #
+
+from src.pipeline.training_pipeline import TrainPipeline
+
+train_pipeline = TrainPipeline()
+train_pipeline.run_pipeline()
