@@ -30,20 +30,9 @@ class Proj1Estimator:
             return False
 
     def load_model(self,)->MyModel:
-        """
-        Load the model from the model_path
-        :return:
-        """
-
         return self.s3.load_model(self.model_path,bucket_name=self.bucket_name)
 
     def save_model(self,from_file,remove:bool=False)->None:
-        """
-        Save the model to the model_path
-        :param from_file: Your local system model path
-        :param remove: By default it is false that mean you will have your model locally available in your system folder
-        :return:
-        """
         try:
             self.s3.upload_file(from_file,
                                 to_filename=self.model_path,
@@ -55,10 +44,6 @@ class Proj1Estimator:
 
 
     def predict(self,dataframe: DataFrame):
-        """
-        :param dataframe:
-        :return:
-        """
         try:
             if self.loaded_model is None:
                 self.loaded_model = self.load_model()
