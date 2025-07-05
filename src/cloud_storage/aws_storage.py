@@ -4,7 +4,7 @@ from typing import Union,List
 import os,sys
 from src.logger import logging
 from mypy_boto3_s3.service_resource import Bucket
-from src.exception import MyException
+from src.exception import CustomException
 from botocore.exceptions import ClientError
 from pandas import DataFrame,read_csv
 import pickle
@@ -22,8 +22,10 @@ class SimpleStorageService:
         from the S3Client class.
         """
         s3_client = S3Client()
-        self.s3_resource = s3_client.s3_resource
-        self.s3_client = s3_client.s3_client
+
+        self.s3_resource = s3_client.s3_client   # boto3.client (used for upload_file, put_object)
+        self.s3_client = s3_client.s3_resource   # boto3.resource (used for Bucket, Object, etc.)
+
 
     def s3_key_path_available(self, bucket_name, s3_key) -> bool:
         """
@@ -41,7 +43,7 @@ class SimpleStorageService:
             file_objects = [file_object for file_object in bucket.objects.filter(Prefix=s3_key)]
             return len(file_objects) > 0
         except Exception as e:
-            raise MyException(e, sys)
+            raise CustomException(e, sys)
 
     @staticmethod
     def read_object(object_name: str, decode: bool = True, make_readable: bool = False) -> Union[StringIO, str]:
@@ -68,7 +70,7 @@ class SimpleStorageService:
             # logging.info("Exited the read_object method of SimpleStorageService class")
             return conv_func()
         except Exception as e:
-            raise MyException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def get_bucket(self, bucket_name: str) -> Bucket:
         """
@@ -86,7 +88,7 @@ class SimpleStorageService:
             logging.info("Exited the get_bucket method of SimpleStorageService class")
             return bucket
         except Exception as e:
-            raise MyException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def get_file_object(self, filename: str, bucket_name: str) -> Union[List[object], object]:
         """
@@ -108,7 +110,7 @@ class SimpleStorageService:
             logging.info("Exited the get_file_object method of SimpleStorageService class")
             return file_objs
         except Exception as e:
-            raise MyException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def load_model(self, model_name: str, bucket_name: str, model_dir: str = None) -> object:
         """
@@ -130,7 +132,7 @@ class SimpleStorageService:
             logging.info("Production model loaded from S3 bucket.")
             return model
         except Exception as e:
-            raise MyException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def create_folder(self, folder_name: str, bucket_name: str) -> None:
         """
@@ -173,7 +175,7 @@ class SimpleStorageService:
                 logging.info(f"Removed local file {from_filename} after upload")
             logging.info("Exited the upload_file method of SimpleStorageService class")
         except Exception as e:
-            raise MyException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def upload_df_as_csv(self, data_frame: DataFrame, local_filename: str, bucket_filename: str, bucket_name: str) -> None:
         """
@@ -192,7 +194,7 @@ class SimpleStorageService:
             self.upload_file(local_filename, bucket_filename, bucket_name)
             logging.info("Exited the upload_df_as_csv method of SimpleStorageService class")
         except Exception as e:
-            raise MyException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def get_df_from_object(self, object_: object) -> DataFrame:
         """
@@ -211,7 +213,7 @@ class SimpleStorageService:
             logging.info("Exited the get_df_from_object method of SimpleStorageService class")
             return df
         except Exception as e:
-            raise MyException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def read_csv(self, filename: str, bucket_name: str) -> DataFrame:
         """
@@ -231,4 +233,4 @@ class SimpleStorageService:
             logging.info("Exited the read_csv method of SimpleStorageService class")
             return df
         except Exception as e:
-            raise MyException(e, sys) from e
+            raise CustomException(e, sys) from e

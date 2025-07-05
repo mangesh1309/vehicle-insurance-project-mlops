@@ -92,10 +92,10 @@ class ModelEvaluation:
 
             logger.info("Test data loaded and now transforming it for prediction...")
 
-            x = self._map_gender_column(x)
-            x = self._drop_id_column(x)
-            x = self._create_dummy_columns(x)
-            x = self._rename_columns(x)
+            X = self._map_gender_column(X)
+            X = self._drop_id_column(X)
+            X = self._create_dummy_columns(X)
+            X = self._rename_columns(X)
 
             trained_model = load_object(self.model_trainer_artifact.trained_model_file_path)
             logger.info("Trained model loaded")
@@ -107,7 +107,7 @@ class ModelEvaluation:
             best_model = self.get_best_model()
             if best_model is not None:
                 logger.info(f"Computing F1_Score for production model..")
-                y_hat_best_model = best_model.predict(x)
+                y_hat_best_model = best_model.predict(X)
                 best_model_f1_score = f1_score(y, y_hat_best_model)
                 logger.info(f"F1_Score-Production Model: {best_model_f1_score}, F1_Score-New Trained Model: {trained_model_f1_score}")
             
@@ -127,7 +127,7 @@ class ModelEvaluation:
         try:
             logger.info("Starting model evaluation phase.")
             evaluate_model_response = self.evaluate_model()
-            s3_model_path = self.model_eval_config.s3_model_key_path
+            s3_model_path = self.model_evaluation_config.s3_model_key_path
 
             model_evaluation_artifact = ModelEvaluationArtifact(
                                 is_model_accepted = evaluate_model_response.is_model_accepted,

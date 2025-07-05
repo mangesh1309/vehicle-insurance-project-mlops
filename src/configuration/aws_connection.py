@@ -26,13 +26,13 @@ class S3Client:
                 raise Exception("Environment variable: AWS_SECRET_ACCESS_KEY_ENV_KEY is not set.")
             
             S3Client.s3_client = boto3.resource("s3",
-                                                access_key_id = access_key_id,
-                                                secret_access_key = secret_access_key,
+                                                aws_access_key_id = access_key_id,
+                                                aws_secret_access_key = secret_access_key,
                                                 region_name = region_name)
             
             S3Client.s3_resource = boto3.client("s3",
-                                                access_key_id = access_key_id,
-                                                secret_access_key = secret_access_key,
+                                                aws_access_key_id = access_key_id,
+                                                aws_secret_access_key = secret_access_key,
                                                 region_name = region_name)
             
             self.s3_client = S3Client.s3_client

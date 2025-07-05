@@ -1,6 +1,6 @@
 
 from src.cloud_storage.aws_storage import SimpleStorageService
-from src.exception import MyException
+from src.exception import CustomException
 from src.entity.estimator import MyModel
 import sys
 from pandas import DataFrame
@@ -25,7 +25,7 @@ class Proj1Estimator:
     def is_model_present(self,model_path):
         try:
             return self.s3.s3_key_path_available(bucket_name=self.bucket_name, s3_key=model_path)
-        except MyException as e:
+        except CustomException as e:
             print(e)
             return False
 
@@ -40,7 +40,7 @@ class Proj1Estimator:
                                 remove=remove
                                 )
         except Exception as e:
-            raise MyException(e, sys)
+            raise CustomException(e, sys)
 
 
     def predict(self,dataframe: DataFrame):
@@ -49,4 +49,4 @@ class Proj1Estimator:
                 self.loaded_model = self.load_model()
             return self.loaded_model.predict(dataframe=dataframe)
         except Exception as e:
-            raise MyException(e, sys)
+            raise CustomException(e, sys)
