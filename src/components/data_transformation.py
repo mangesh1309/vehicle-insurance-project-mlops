@@ -88,8 +88,9 @@ class DataTransformation:
         """Drop the 'id' column if it exists."""
         logger.info("Dropping 'id' column")
         drop_col = self.schema_config['drop_columns']
-        if drop_col in df.columns:
-            df = df.drop(drop_col, axis=1)
+        for col in drop_col:
+            if col in df.columns:
+                df = df.drop(col, axis=1)
         return df
     
     def _create_dummy_columns(self, df):
